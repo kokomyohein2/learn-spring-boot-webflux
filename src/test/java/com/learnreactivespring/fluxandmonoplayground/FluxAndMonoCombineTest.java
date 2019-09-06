@@ -3,6 +3,7 @@ package com.learnreactivespring.fluxandmonoplayground;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
+import reactor.test.scheduler.VirtualTimeScheduler;
 
 import java.time.Duration;
 
@@ -54,15 +55,23 @@ public class FluxAndMonoCombineTest {
     @Test
     public void combineUsingConcat_WithDelay() {
 
+        VirtualTimeScheduler.getOrSet();
+
         Flux<String> flux1 = Flux.just("A", "B", "C").delayElements(Duration.ofSeconds(1));
         Flux<String> flux2 = Flux.just("D", "E", "F").delayElements(Duration.ofSeconds(1));
 
         Flux<String> mergedFlux = Flux.concat(flux1, flux2);
 
-        StepVerifier.create(mergedFlux.log())
+        StepVerifier.withVirtualTime(() -> mergedFlux.log())
                 .expectSubscription()
-                .expectNext("A", "B", "C", "D", "E", "F")
+                .thenAwait(Duration.ofSeconds(6))
+                .expectNextCount(6)
                 .verifyComplete();
+
+//        StepVerifier.create(mergedFlux.log())
+//                .expectSubscription()
+//                .expectNext("A", "B", "C", "D", "E", "F")
+//                .verifyComplete();
     }
 
     @Test
@@ -78,7 +87,7 @@ public class FluxAndMonoCombineTest {
         StepVerifier.create(mergedFlux.log())
                 .expectSubscription()
                 .expectNext("AD", "BE", "CF")
-                  .verifyComplete();
+                .verifyComplete();
     }
 
 
