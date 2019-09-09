@@ -48,11 +48,19 @@ public class ItemReactiveRepositoryTest {
     }
 
     @Test
-    public void getItemById(){
+    public void getItemById() {
 
         StepVerifier.create(itemReactiveRepository.findById("ABC"))
                 .expectSubscription()
                 .expectNextMatches(item -> item.getDescription().equalsIgnoreCase("apple airpods"))
+                .verifyComplete();
+    }
+
+    @Test
+    public void findItemByDescription() {
+        StepVerifier.create(itemReactiveRepository.findByDescription("LG TV").log("findItemByDescription : "))
+                .expectSubscription()
+                .expectNextCount(1)
                 .verifyComplete();
     }
 }
