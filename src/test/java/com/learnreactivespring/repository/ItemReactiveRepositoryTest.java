@@ -82,7 +82,7 @@ public class ItemReactiveRepositoryTest {
     public void updateItem() {
 
         double newPrice = 32.98;
-        Flux<Item> updatedItem = itemReactiveRepository.findByDescription("LG TV").log("updateItem")
+        Mono<Item> updatedItem = itemReactiveRepository.findByDescription("LG TV").log("updateItem")
                 .map(item -> {
                     item.setPrice(newPrice);
                     return item;
@@ -94,6 +94,43 @@ public class ItemReactiveRepositoryTest {
         StepVerifier.create(updatedItem)
                 .expectSubscription()
                 .expectNextMatches(item -> item.getPrice() == 32.98)
+                .verifyComplete();
+    }
+
+    @Test
+    public void deleteItemById() {
+
+        Mono<Void> deletedItem = itemReactiveRepository.findById("ABC")
+                .map(Item::getId)
+                .flatMap((id) -> {
+                    return itemReactiveRepository.deleteById(id);
+                });
+
+        StepVerifier.create(deletedItem.log())
+                .expectSubscription()
+                .verifyComplete();
+
+        StepVerifier.create(itemReactiveRepository.findAll().log())
+                .expectSubscription()
+                .expectNextCount(3)
+                .verifyComplete();
+    }
+
+    @Test
+    public void deleteItem() {
+
+        Mono<Void> deletedItem = itemReactiveRepository.findByDescription("LG TV")
+                .flatMap((item) -> {
+                    return itemReactiveRepository.delete(item);
+                });
+
+        StepVerifier.create(deletedItem.log())
+                .expectSubscription()
+                .verifyComplete();
+
+        StepVerifier.create(itemReactiveRepository.findAll().log())
+                .expectSubscription()
+                .expectNextCount(3)
                 .verifyComplete();
     }
 }
