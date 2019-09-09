@@ -25,7 +25,7 @@ public class SampleHandlerFunction {
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(
-                        Flux.just(1)
+                        Mono.just(1)
                                 .log(), Integer.class
                 );
     }
