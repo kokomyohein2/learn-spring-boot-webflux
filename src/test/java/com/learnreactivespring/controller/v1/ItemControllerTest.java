@@ -130,12 +130,40 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void deleteItem(){
+    public void deleteItem() {
 
         webTestClient.delete().uri(ItemConstants.ITEM_END_POINT_V1.concat("/{id}"), "ABC")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(Void.class);
+    }
+
+    @Test
+    public void updateItem() {
+
+        Item item = new Item(null, "iPhoneX", 999.99);
+
+        webTestClient.put().uri(ItemConstants.ITEM_END_POINT_V1.concat("/{id}"), "ABC")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(item), Item.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.price", item.getPrice());
+    }
+
+    @Test
+    public void updateItem_notFound() {
+
+        Item item = new Item(null, "iPhoneX", 999.99);
+
+        webTestClient.put().uri(ItemConstants.ITEM_END_POINT_V1.concat("/{id}"), "def")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(item), Item.class)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 }
