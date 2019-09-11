@@ -16,11 +16,11 @@ import static com.learnreactivespring.constants.ItemConstants.ITEM_END_POINT_V1;
 @Slf4j
 public class ItemController {
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        log.error("Exception caught in handleRuntimeException : {} " , ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+//        log.error("Exception caught in handleRuntimeException : {} " , ex);
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+//    }
 
     @Autowired
     ItemReactiveRepository itemReactiveRepository;
