@@ -173,7 +173,7 @@ public class ItemControllerTest {
                 .exchange()
                 .expectStatus().is5xxServerError()
                 .expectBody(String.class)
-                .isEqualTo("runtimeException Occurred.");
+                .isEqualTo("RuntimeException Occurred.");
     }
 
 }
